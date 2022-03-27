@@ -1,13 +1,16 @@
-import json
-from typing import Union
 import copy
+import json
 from itertools import chain
+from typing import Union
 
-from .models import Value, Node
+from .models import Bool, Dict, Float, Int, List, Node, Null, Str, Undefined, Value
 
 
 def create_mapper(types: set) -> dict:
-    mapper = {typ.__name__.lower(): typ for typ in chain([Value], types)}
+    mapper = {
+        typ.__name__.lower(): typ
+        for typ in chain([Value, Null, Dict, List, Str, Int, Float, Bool], types)
+    }
     return mapper
 
 
@@ -49,7 +52,7 @@ class Parser:
         obj = json.loads(s)
         return self.parse(obj, deepcopy=False)
 
-    def parse(self, obj: dict, deepcopy: bool = True):
+    def parse(self, obj, deepcopy: bool = True):
         obj = copy.deepcopy(obj)
 
         node = self.to_node(obj)
@@ -59,11 +62,13 @@ class Parser:
 
         return node
 
-    def dump(self):
-        ...
+    def dump(self, obj: Node, ensure_ascii: bool = False):
+        result = obj.simplify()
+        return json.dump(result, ensure_ascii=ensure_ascii)  # type: ignore
 
-    def dumps(self):
-        ...
+    def dumps(self, obj: Node, ensure_ascii: bool = False):
+        result = obj.simplify()
+        return json.dumps(result, ensure_ascii=ensure_ascii)
 
     @staticmethod
     def _create_to_node(mapper, start: str = None):
@@ -72,36 +77,25 @@ class Parser:
 
             if not isinstance(obj, dict):
                 cls = mapper["value"]
-                return cls(obj)
+                return cls(value=obj)
 
             try:
                 k, attrs = next(iter(obj.items()))
+            except StopIteration:
+                raise TypeError("must be key")
             except:
                 raise TypeError("no key")
 
-            cls = mapper[k]
-
-            if isinstance(attrs, list):
-                nodes = attrs
-                attrs = {}
-            elif isinstance(attrs, dict):
-                nodes = attrs.pop("nodes", [])
+            selector = mapper[k]
+            cls, nodes, value, new_attrs = selector._split(attrs)
+            if isinstance(nodes, list):
+                nodes = [to_node(x) for x in nodes]
+            elif nodes is Undefined:
+                ...
             else:
                 raise TypeError()
 
-            if issubclass(cls, Value):
-                if not isinstance(nodes, list):
-                    raise TypeError()
-
-                if len(nodes) == 1:
-                    return cls(nodes[0], **attrs)
-
-                elif len(nodes) == 0:
-                    return cls(None, **attrs)
-                else:
-                    raise ValueError()
-            else:
-                nodes = [to_node(x) for x in nodes]
-                return cls(nodes, **attrs)
+            selector._is_valid(value)
+            return cls(nodes=nodes, value=value, **new_attrs)
 
         return to_node
