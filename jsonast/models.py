@@ -67,12 +67,12 @@ class NodeBase(Mapper):
 
 
 class Node(NodeBase):
-    def __init__(self, nodes=None, *, value=Undefined, **attrs):
+    def __init__(self, nodes=None, **attrs):
         self[self.type()] = attrs
         attrs["nodes"] = nodes or []
 
-        if value is not Undefined:
-            raise ValueError()
+        # if value is not Undefined:
+        #     raise ValueError()
 
     @property
     def has_attrs(self):
@@ -120,11 +120,11 @@ class Value(NodeBase):
 
         return cls, nodes, value, attrs
 
-    def __init__(self, value=None, *, nodes=Undefined, **attrs):
+    def __init__(self, value=None, **attrs):
         self[self.type()] = attrs
 
-        if nodes is not Undefined:
-            raise ValueError()
+        # if nodes is not Undefined:
+        #     raise ValueError()
 
         attrs["value"] = self.normalize(value)
 

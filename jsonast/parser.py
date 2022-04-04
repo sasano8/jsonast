@@ -96,6 +96,13 @@ class Parser:
                 raise TypeError()
 
             selector._is_valid(value)
-            return cls(nodes=nodes, value=value, **new_attrs)
+
+            if not nodes is Undefined:
+                new_attrs["nodes"] = nodes
+
+            if not value is Undefined:
+                new_attrs["value"] = value
+
+            return cls(**new_attrs)
 
         return to_node
