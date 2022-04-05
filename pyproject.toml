@@ -5,7 +5,7 @@ description = ""
 authors = ["sasano8 <y-sasahara@ys-method.com>"]
 license = "MIT"
 readme = "README.md"
-# repository = "https://github.com/sasano8/asy"
+repository = "https://github.com/sasano8/jsonast"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<=3.10.*"
@@ -13,7 +13,7 @@ jsonml = "^0.0.3"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.12.0"
-black = "^20.8b1"
+black = "^22.3.0"
 isort = "^5.8.0"
 flake8 = "^3.9.0"
 mypy = "^0.812"
