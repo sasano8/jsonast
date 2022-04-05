@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "jsonast"
-version = "0.0.1"
+version = "0.0.2"
 description = ""
 authors = ["sasano8 <y-sasahara@ys-method.com>"]
 license = "MIT"
@@ -9,6 +9,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<=3.10.*"
+jsonml = "^0.0.3"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.12.0"

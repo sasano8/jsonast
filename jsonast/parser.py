@@ -1,36 +1,38 @@
+from typing import Callable, Union
+
+from jsonml import BaseXMLParser
+from jsonml import Parser as JsonMlParser
+from jsonml import build_selector
+
 from .parser_json import JsonParser
-from .parser_xml import XmlParser
-from .tags import Node, Json
+from .tags import AnonymousTag, Json
+from .tags import Node as _Node
 
 
-def create_selector(mapping: dict):
-    mapping = mapping.copy()
-    if "default" not in mapping:
-        mapping["default"] = lambda tag: Node(tag)
-
-    default = mapping.get("default")
-
-    def selector(tag: str):
-        return mapping.get(tag.lower(), default)
-
-    return selector
+class Node(_Node, AnonymousTag):
+    ...
 
 
-class JsonAstParser:
-    def __init__(
-        self,
-        mapping: dict = {
-            "json": Json,
-            "default": lambda tag: Node(tag),
-        },
-    ):
-        self.mapping = mapping
-        self.selector = create_selector(mapping)
-        self.parser_xml = XmlParser(mapping)
-        self.parser_json = JsonParser(mapping)
+default_selector = build_selector(
+    mapping={
+        "json": Json,
+    },
+    default=Node,
+)
+
+
+class JsonAstParser(BaseXMLParser):
+    def __init__(self, selector: Union[dict, Callable] = default_selector):
+        super().__init__(selector)
+
+        self.parser_json = JsonParser(self.selector)
+        self.parser_jsonml = JsonMlParser(self.selector)
 
     def parse_from_xml_string(self, xml: str):
-        return self.parser_xml.parse_from_xml_string(xml)
+        return self.parser_jsonml.parse_from_xml_string(xml)
 
-    def parse(self, obj, deepcopy: bool = True):
+    def parse_from_jsonml(self, obj: list, deepcopy: bool = True):
+        return self.parser_jsonml.parse(obj, deepcopy=True)
+
+    def parse_from_jsonast(self, obj: dict, deepcopy: bool = True):
         return self.parser_json.parse(obj, deepcopy=True)

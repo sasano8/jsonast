@@ -1,7 +1,9 @@
+import json
+from typing import Literal, NamedTuple
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
-from typing import NamedTuple, Literal
-import json
+
+from jsonast import Parser
 
 
 def test_xml():
@@ -17,31 +19,29 @@ def test_xml():
     print(s)
 
 
-def test_xml_parser():
-    from jsonast.tags import Statement, Json
-    from jsonast import XmlParser
+def test_xml_parser(parser: Parser):
+    from jsonast.tags import Json, Node
 
-    parser = XmlParser()
     tree = parser.parse_from_xml_string(
         "<default></default>",
     )
 
-    assert isinstance(tree, Statement)
-    assert tree.to_xml() == "<default />"
+    assert isinstance(tree, Node)
+    assert parser.to_xml(tree) == "<default />"
 
     tree = parser.parse_from_xml_string(
         "<other></other>",
     )
 
-    assert isinstance(tree, Statement)
-    assert tree.to_xml() == "<other />"
+    assert isinstance(tree, Node)
+    assert parser.to_xml(tree) == "<other />"
 
     tree = parser.parse_from_xml_string("<json>1</json>")
 
     assert isinstance(tree, Json)
     assert tree.value == 1
     assert tree.text == "1"
-    assert tree.to_xml() == "<json>1</json>"
+    assert parser.to_xml(tree) == "<json>1</json>"
 
 
 def test_load():

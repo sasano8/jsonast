@@ -1,37 +1,13 @@
-import json
-
-from jsonast.tags import Json, Node
-from xml.etree.ElementTree import Element
 import copy
+import json
+from xml.etree.ElementTree import Element
+
+from jsonml import Parser as BaseXMLParser
+
+from jsonast.tags import Json, Node, Undefined
 
 
-class Undefined:  # type: ignore
-    ...
-
-
-Undefined = Undefined()  # type: ignore
-
-
-class JsonParser:
-    def __init__(
-        self,
-        mapping: dict = {
-            "default": lambda tag, attr: Node(tag, attr),
-            "json": Json,
-        },
-    ):
-        mapping = mapping.copy()
-        if "default" not in mapping:
-            mapping["default"] = lambda tag, attr: Node(tag, attr)
-
-        default = mapping.get("default")
-
-        def selector(tag: str):
-            return mapping.get(tag.lower(), default)
-
-        self.mapping = mapping
-        self.selector = selector
-
+class JsonParser(BaseXMLParser):
     def parse_from_json_string(self, text: str):
         obj = json.loads(text)
         return self.parse_from_dict(obj)
@@ -51,7 +27,7 @@ class JsonParser:
 
     def parse_node(self, obj):
         if not isinstance(obj, dict):
-            return self.create_element("json", obj)
+            return self.create_node("json", obj)
 
         try:
             tag, attrs = next(iter(obj.items()))
@@ -60,9 +36,9 @@ class JsonParser:
         except:
             raise TypeError("no key")
 
-        return self.create_element(tag, attrs)
+        return self.create_node(tag, attrs)
 
-    def create_element(self, tag, attrs):
+    def create_node(self, tag, attrs):
         factory = self.selector(tag)
         obj: Element = factory(tag, {})
 

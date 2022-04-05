@@ -162,6 +162,14 @@ plugins = ["setuptools"]
 requirements_deprecated_finder = ["pipreqs", "pip-api"]
 
 [[package]]
+category = "main"
+description = ""
+name = "jsonml"
+optional = false
+python-versions = ">=3.8,<=3.10"
+version = "0.0.3"
+
+[[package]]
 category = "dev"
 description = "McCabe checker, plugin for flake8"
 name = "mccabe"
@@ -409,7 +417,7 @@ docs = ["proselint (>=0.10.2)", "sphinx (>=3)", "sphinx-argparse (>=0.2.5)", "sp
 testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", "pytest (>=4)", "pytest-env (>=0.6.2)", "pytest-freezegun (>=0.4.1)", "pytest-mock (>=2)", "pytest-randomly (>=1)", "pytest-timeout (>=1)", "packaging (>=20.0)"]
 
 [metadata]
-content-hash = "84cb19baeb5294345651c2d0ced2094d77465619beb5eaf18c10358d8e2ebeeb"
+content-hash = "e07473c3355248a37a4c633d3110f40f15dd81779d304076e6c2fc653b3b4af0"
 python-versions = ">=3.8,<=3.10.*"
 
 [metadata.files]
@@ -506,6 +514,10 @@ iniconfig = [
 isort = [
     {file = "isort-5.10.1-py3-none-any.whl", hash = "sha256:6f62d78e2f89b4500b080fe3a81690850cd254227f27f75c3a0c491a1f351ba7"},
     {file = "isort-5.10.1.tar.gz", hash = "sha256:e8443a5e7a020e9d7f97f1d7d9cd17c88bcb3bc7e218bf9cf5095fe550be2951"},
+]
+jsonml = [
+    {file = "jsonml-0.0.3-py3-none-any.whl", hash = "sha256:572135e6fa5e0225d5e76ff1bc99297b8f8952aa6344a4196ba9a8b712f8c75a"},
+    {file = "jsonml-0.0.3.tar.gz", hash = "sha256:697cb7f31110c8291f721a4db25569bbc92830373ca09d681c3d36116bb630cc"},
 ]
 mccabe = [
     {file = "mccabe-0.6.1-py2.py3-none-any.whl", hash = "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42"},

@@ -27,5 +27,6 @@
 ```
 poetry install
 pre-commit install
+source .venv/bin/activate
 make
 ```
