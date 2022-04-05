@@ -17,7 +17,6 @@ if TYPE_CHECKING:
     class RestrictTag(ElementTree.Element):
         ...
 
-
 else:
 
     class AnonymousTag:
