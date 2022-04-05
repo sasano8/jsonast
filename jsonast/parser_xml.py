@@ -1,4 +1,4 @@
-from jsonast.tags import Json, Statement
+from jsonast.tags import Json, Node
 from xml.etree import ElementTree
 from xml.etree.ElementTree import XMLParser as _XMLParser
 
@@ -7,13 +7,13 @@ class XmlParser:
     def __init__(
         self,
         mapping: dict = {
-            "default": lambda tag, attr: Statement(tag, attr),
+            "default": lambda tag, attr: Node(tag, attr),
             "json": Json,
         },
     ):
         mapping = mapping.copy()
         if "default" not in mapping:
-            mapping["default"] = lambda tag, attr: Statement(tag, attr)
+            mapping["default"] = lambda tag, attr: Node(tag, attr)
 
         default = mapping.get("default")
 

@@ -17,6 +17,13 @@ class KeyValue(dict):
     def item(self):
         return next(iter(self.items()))
 
+    # def simplify(self):
+    #     if len(self.value["attrs"]) == 0:
+    #         self.value.pop("attrs", None)
+
+    #     if len(self.value["nodes"]) == 0:
+    #         self.value.pop("nodes", None)
+
 
 class ElementBase(ElementTree.Element):
     def set(self, key, value):
@@ -30,7 +37,7 @@ class ElementBase(ElementTree.Element):
         obj = {
             "attrs": self.attrib.copy(),
             "nodes": [x.to_obj() for x in self],  # type: ignore
-            "value": self.value,  # type: ignore
+            # "value": self.value,  # type: ignore
         }
 
         if len(obj["attrs"]) == 0:
@@ -51,7 +58,7 @@ class ElementBase(ElementTree.Element):
             return ElementTree.tostring(self).decode("utf8")
 
 
-class Statement(ElementBase):
+class Node(ElementBase):
     @property
     def value(self):
         return None
@@ -83,6 +90,7 @@ class Json(ElementBase):
     def to_dict(self):
         dic = super().to_dict()
         dic.value.pop("nodes", None)
+        dic["value"] = self.value
         return dic
 
     def to_obj(self):
