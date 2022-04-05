@@ -94,8 +94,17 @@ class Json(ElementBase, RestrictTag):
             self._text = None
             self._value = None
         else:
-            self._text = json.dumps(value, ensure_ascii=False)
-            self._value = value
+            val = self.deserialize(value)
+            self._text = self.serialize(val)
+            self._value = val
+
+    @classmethod
+    def deserialize(cls, value):
+        return value
+
+    @classmethod
+    def serialize(cls, value):
+        return json.dumps(value, ensure_ascii=False)
 
     @property
     def text(self):
@@ -103,15 +112,27 @@ class Json(ElementBase, RestrictTag):
 
     @text.setter
     def text(self, value):
+        if isinstance(value, str):
+            value = value.strip()
+
         if value is None:
             self._value = None
             self._text = None
         else:
             try:
-                self._value = json.loads(value)
+                if len(value) == 0:
+                    val = None
+                else:
+                    val = json.loads(value)
             except json.JSONDecodeError as e:
                 raise Exception(f"{str(e)}: {value}")
-            self._text = value
+
+            if val is None:
+                self._value = None
+                self._text = "null"
+            else:
+                self._value = self.deserialize(val)
+                self._text = value
 
     def set(self, key, value):
         raise NotImplementedError()

@@ -43,6 +43,13 @@ def test_xml_parser(parser: Parser):
     assert tree.text == "1"
     assert parser.to_xml(tree) == "<json>1</json>"
 
+    tree = parser.parse_from_xml_string("<json>  </json>")
+
+    assert isinstance(tree, Json)
+    assert tree.value is None
+    assert tree.text == "null"
+    assert parser.to_xml(tree) == "<json>null</json>"
+
 
 def test_load():
     xml = "<?xml version='1.0' encoding='utf8'?><select aaa=\"1&lt;&gt;'&quot;\"><from /><returning><value>1&lt;&gt;'\"</value></returning></select>"
