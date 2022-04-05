@@ -1,8 +1,9 @@
-from typing import Callable, Union
+from typing import Callable, Type, Union
+from xml.etree import ElementTree
 
 from jsonml import BaseXMLParser
 from jsonml import Parser as JsonMlParser
-from jsonml import build_selector
+from jsonml import build_selector as _build_selector
 
 from .parser_json import JsonParser
 from .tags import AnonymousTag, Json
@@ -13,12 +14,16 @@ class Node(_Node, AnonymousTag):
     ...
 
 
-default_selector = build_selector(
-    mapping={
+def build_selector(
+    mapping: dict = {
         "json": Json,
     },
-    default=Node,
-)
+    default: Union[str, None, Type[ElementTree.Element]] = Node,
+) -> Callable[[str], Type[ElementTree.Element]]:
+    return _build_selector(mapping=mapping, default=default)
+
+
+default_selector = build_selector()
 
 
 class JsonAstParser(BaseXMLParser):
